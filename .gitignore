@@ -1,0 +1,4 @@
+# Don't put font files to repository
+*.ttf
+*.otf
+document_font
