@@ -366,7 +366,7 @@ TranslationDe = function() {
                     "scaleHelp" : "Maßtab des Modell, von {0} bis {1}.",
                     "style" : "Stil",
                     "submit" : "Erzeuge",
-                    "reset" : "new starte",
+                    "reset" : "Zurücksetze",
                     "download" : "Herunterlade",
                     "generating" : "Ein Moment, bitte...",
                     "title" : "{0}, Maßtab 1:{1}",

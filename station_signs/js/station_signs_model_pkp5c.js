@@ -600,7 +600,7 @@ DirectionPlateEp5c.prototype.draw = function(doc) {
 StationSignsPKPEp5c = function() {
     this.name = {"pl":"Oznakowanie stacji kolejowych, epoka Vc",
                  "en":"Railway station signs, epoch Vc",
-                 "de":"-----"};
+                 "de":"Bahnhofkennzeichnung, PKP, Epoche Vc"};
     this.strings = {platform: "peron", track: "tor", sector: "sektor", direction: "kierunek"};
     //this.strings = {platform: "Bahnsteig", track: "Gleis", sector: "Sektor", direction: "Richtung"};
     this.stringsTranslated = {platform: "platform", track: "track", sector: "sector", direction: "direction"};

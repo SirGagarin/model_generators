@@ -9,6 +9,7 @@
         <script type="text/javascript" src="js/platform.js"></script>
         <script type="text/javascript" src="js/station_signs_generator.js"></script>
         <script type="text/javascript" src="js/station_signs_model_pkp5c.js"></script>
+        <script type="text/javascript" src="js/station_signs_model_de5c.js"></script>
         <script type="text/javascript" src="js/station_signs_model_pkp4.js"></script>
         <style>
             form {
@@ -69,7 +70,7 @@
         </form>
         <script>
             var modelGenerator = new StationSignsGenerator("model-generator","../fonts/",
-                [new StationSignsPKPEp4(), new StationSignsPKPEp5c()], new StationSignsTranslationPl());
+                [new StationSignsPKPEp4(), new StationSignsPKPEp5c(), new StationSignsDeEp5c()], new StationSignsTranslationPl());
         </script>
     </body>
 </html>

@@ -235,7 +235,7 @@ PlatformPlateEp4.prototype.draw = function(doc) {
 StationSignsPKPEp4 = function() {
     this.name = {"pl":"Oznakowanie stacji kolejowych PKP, epoka IV",
                  "en":"PKP railway station signs, epoch IV",
-                 "de":"-----"};
+                 "de":"Bahnhofkennzeichnung, PKP, Epoche IV"};
     this.strings = {platform: "peron", track: "tor"};
 };
 StationSignsPKPEp4.prototype = Object.create(Model.prototype);

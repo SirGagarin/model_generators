@@ -494,3 +494,47 @@ StationSignsTranslationPl = function() {
 };
 StationSignsTranslationPl.prototype = Object.create(TranslationPl.prototype);
 StationSignsTranslationPl.prototype.constructor = StationSignsTranslationPl;
+
+StationSignsTranslationDe = function() {
+    TranslationDe.call(this);
+    this.lang = "de";
+    this.extend({
+        "name" : "Bahnhofsname",
+        "nameHelp" : "Name des Bahnhofs, {0} Zeilen maximal, {1} Buchstaben in jeder Zeile.",
+        "bilingual" : "zweisprachiger Bahnhofsname",
+        "bilingualHelp" : "Zweite Zeile des Names ist in Fremdsprache.",
+        "external" : "zusätzliche Bahnhofskennzeichung",
+        "externalHelp" : "Zusätzliche Nametaflen für äußeren Bahnsteigen.",
+        "platformNumber" : "Bahnsteignummer",
+        "platformNumberHelp" : "Bahnsteignummer, von {0} bis {1}.",
+        "leftTrack" : "Gleisnummer - links",
+        "leftTrackHelp" : "Nummer des Gleis auf der linken Seite des Bahnsteigs, von {0} bis {1}.",
+        "rightTrack" : "Gleisnummer - rechts",
+        "rightTrackHelp" : "Nummer des Gleis auf der rechten Seite des Bahnsteigs, von {0} bis {1}.",
+        "length" : "Bahnsteiglänge [m]",
+        "lengthHelp" : "Länge des Bahnsteigs, von {0} bis {1}.",
+        "width" : "Bahnsteigbreite [m]",
+        "widthHelp" : "Breite des Bahnsteigs, von {0} bis {1}.",
+        "directionLeft" : "Name des vorigen Bahnhof",
+        "directionLeftHelp" : "Name des vorigen Bahnhof, {0} Zeilen maximal, {1} Buchstaben in jeder Zeile.",
+        "directionRight" : "Name des folgenden Bahnhof",
+        "directionRightHelp" : "Name des folgenden Bahnhof, {0} Zeilen maximal, {1} Buchstaben in jeder Zeile.",
+        "tableWidth" : "Modulen der Fahrplantafel",
+        "tableWidthHelp" : "Breite der Fahrplantafelshild in Modulen der Tafel, von {0} bis {1}.",
+        "sector" : "Sektorkennzeichnung",
+        "sectorHelp" : "Zusätzliche Sektorkennzeichnung für Bahnsteige länger als 300 m.",
+        "small" : "Kleine Kennzeichnung",
+        "smallHelp" : "Kleine Kennzeichnung z.B. für Bahnsteigüberdachung.",
+        "platform" : "Bahnsteig {0}",
+        "track" : "Gieis {0}",
+        "addBefore" : "Zugeben vor",
+        "addAfter" : "Zugeben hinter",
+        "change" : "Ändern",
+        "remove" : "Löschen",
+        "moveUp" : "Verrücken nach vorne",
+        "moveDown" : "Verrücken nach hinten",
+        "repository" : "PKP Repositorium",
+        "filename" : "bahnhofkennzeichnung_de{0}cl.pdf"});
+};
+StationSignsTranslationDe.prototype = Object.create(TranslationDe.prototype);
+StationSignsTranslationDe.prototype.constructor = StationSignsTranslationDe;
