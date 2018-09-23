@@ -192,6 +192,13 @@ ModelGenerator.prototype.setFormValues = function(data) {
 };
 
 /**
+ * Populate form entries with default values.
+ */
+ModelGenerator.prototype.setDefaultSettings = function() {
+    this.setFormValues();
+};
+
+/**
  * Check correctness of numeric input. Invalid field's class is set to "field-error".
  * @param {Object} input HTML form numeric input.
  * @param {number} minValue Minimum allowed value of the input.
@@ -199,11 +206,12 @@ ModelGenerator.prototype.setFormValues = function(data) {
  * @return {boolean} True if input value is valid (non-empty, numeric, within specified bounds). False otherwise.
  */
 ModelGenerator.prototype.validateNumericInput = function(input, minValue, maxValue) {
-    if (input.value === '' ||
-        input.value === ' ' ||
-        isNaN(input.value) ||
-        input.value < minValue ||
-        input.value > maxValue) {
+    var strValue = input.value.trim();
+    var value = Number(input.value);
+    if (strValue === '' ||
+        value === NaN ||
+        value < minValue ||
+        value > maxValue) {
         input.className = "field-error";
         return false;
     }
@@ -213,7 +221,7 @@ ModelGenerator.prototype.validateNumericInput = function(input, minValue, maxVal
 
 /**
  * Check correctness of text input. Invalid field's class is set to "field-error".
- * @param {Object} input HTML from text input.
+ * @param {Object} input HTML form text input.
  * @param {number} minLength Minimum number of charactes in the field.
  * @param {number} maxLength Maximum number of charactes in the field.
  * @return {boolean} True if input value is valid (non-empty, text, length within specified bounds). False otherwise.
@@ -231,11 +239,25 @@ ModelGenerator.prototype.validateStringInput = function(input, minLength, maxLen
 };
 
 /**
+ * Check if combobox/list has any entries.
+ * @param {Object} input HTML form list input.
+ * @return {boolean} True if input has any options. False otherwise.
+ */
+ModelGenerator.prototype.validateEmptyList = function(input) {
+    if (input.hasChildNodes()){
+        input.className = "";
+        return true;
+    }
+    input.className = "field-error";
+    return false;
+};
+
+/**
  * Validate fields of generator's form.
  * @abstract
  */
 ModelGenerator.prototype.validateInputs = function() {
-    return true;
+    return this.validateNumericInput(this.scaleField, this.MIN_SCALE, this.MAX_SCALE);
 };
 
 /**
@@ -268,6 +290,7 @@ ModelGenerator.prototype.prepareModelData = function() {
  * Create model document.
  */
 ModelGenerator.prototype.createModel = function() {
+    if (!this.validateInputs()) return;
     this.iframe.style.display = "none";
     this.statusText.style.display = "block";
     this.statusText.textContent = this.getTranslation("generating");

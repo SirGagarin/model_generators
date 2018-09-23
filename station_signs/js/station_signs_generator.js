@@ -10,22 +10,36 @@ function StationSignsGenerator(inputFormName, fontFolder, models, translation) {
     this.MAX_LENGTH = 1000;
     this.MIN_WIDTH = 1;
     this.MAX_WIDTH = 20;
-    this.MIN_TABLE_WIDTH = 0;
+    this.MIN_TABLE_WIDTH = 1;
     this.MAX_TABLE_WIDTH = 3;
+    this.NAME_MAX_ROWS = 2;
+    this.NAME_MAX_COLS = 30;
     this.modelDefaults = {
             name: "Buczyna Osiedle", isBilingual: false, hasExternal: true, hasSmallPlates: false, platforms: [
-                new Platform(1, 1, 1, 300, 5, "Dąbrowa", "Zalesie", 0, false),
-                new Platform(2, 2, 3, 300, 5, "Dąbrowa", "Zalesie", 0, true),
-                new Platform(3, 5, 3, 300, 5, "Dąbrowa", "Zalesie", 0, false)
+                new Platform(1, "", 1, 300, 4, "Dąbrowa", "Zalesie", 2, false),
+                new Platform(2, 2, 3, 300, 4, "Dąbrowa", "Zalesie", 2, true),
+                new Platform(3, 4, "", 300, 4, "Dąbrowa", "Zalesie", 2, false)
         ]};
     ModelGenerator.call(this, inputFormName, fontFolder, models, translation);
 }
 StationSignsGenerator.prototype = Object.create(ModelGenerator.prototype);
 StationSignsGenerator.prototype.constructor = StationSignsGenerator;
 
+StationSignsGenerator.prototype.adjustCapabilities = function(event) {
+    var capabilities = this.models[this.styleField.selectedIndex].capabilities;
+    this.bilingualCheckbox.disabled = !capabilities.allowsBilingual;
+    this.externalCheckbox.disabled = !capabilities.allowsAdditionalSigns;
+    this.smallCheckbox.disabled = !capabilities.allowsSmallSigns;
+    this.directionLeftField.disabled = !capabilities.allowsDirectionPlates;
+    this.directionRightField.disabled = !capabilities.allowsDirectionPlates;
+    this.tableWidthField.disabled = !capabilities.allowsTimeTables;
+    this.sectorCheckbox.disabled = !capabilities.allowsSectors;
+};
+
 StationSignsGenerator.prototype.createCustomInterfacePart = function() {
     var customInterfacePart = [];
     var self = this;
+    this.styleField.addEventListener("input", function(event){ self.adjustCapabilities(event); });
 
     // name input
     var nameGroup = document.createElement("p");
@@ -33,8 +47,8 @@ StationSignsGenerator.prototype.createCustomInterfacePart = function() {
     nameLabel.textContent = this.getTranslation("name");
     nameGroup.appendChild(nameLabel);
     this.nameField = document.createElement("textarea");
-    this.nameField.cols = "30";
-    this.nameField.rows = "2";
+    this.nameField.cols = this.NAME_MAX_COLS;
+    this.nameField.rows = this.NAME_MAX_ROWS;
     this.nameField.title = this.getTranslation("nameHelp", [2, 30]);
     this.nameField.addEventListener("keypress", function(event){ self.validateName(event); } );
     nameGroup.appendChild(this.nameField);
@@ -149,8 +163,8 @@ StationSignsGenerator.prototype.createCustomInterfacePart = function() {
     directionLeftLabel.textContent = this.getTranslation("directionLeft");
     directionLeftGroup.appendChild(directionLeftLabel);
     this.directionLeftField = document.createElement("textarea");
-    this.directionLeftField.cols = "30";
-    this.directionLeftField.rows = "2";
+    this.directionLeftField.cols = this.NAME_MAX_COLS;
+    this.directionLeftField.rows = this.NAME_MAX_ROWS;
     this.directionLeftField.title = this.getTranslation("directionLeftHelp", [2, 30]);
     this.directionLeftField.addEventListener("keypress", function(event){ self.validateName(event); } );
     directionLeftGroup.appendChild(this.directionLeftField);
@@ -162,8 +176,8 @@ StationSignsGenerator.prototype.createCustomInterfacePart = function() {
     directionRightLabel.textContent = this.getTranslation("directionRight");
     directionRightGroup.appendChild(directionRightLabel);
     this.directionRightField = document.createElement("textarea");
-    this.directionRightField.cols = "30";
-    this.directionRightField.rows = "2";
+    this.directionRightField.cols = this.NAME_MAX_COLS;
+    this.directionRightField.rows = this.NAME_MAX_ROWS;
     this.directionRightField.title = this.getTranslation("directionRightHelp", [2, 30]);
     this.directionRightField.addEventListener("keypress", function(event){ self.validateName(event); } );
     directionRightGroup.appendChild(this.directionRightField);
@@ -317,7 +331,6 @@ StationSignsGenerator.prototype.platformSelectCallback = function() {
 };
 
 StationSignsGenerator.prototype.addPlatformBefore = function() {
-    if (!this.validateInputs()) return;
     this.platforms.splice(this.selectedPlatformId, 0,
         new Platform(this.platformNumberField.value,
                     this.leftTrackField.value,
@@ -332,7 +345,6 @@ StationSignsGenerator.prototype.addPlatformBefore = function() {
 };
 
 StationSignsGenerator.prototype.addPlatformAfter = function() {
-    if (!this.validateInputs()) return;
     this.platforms.splice(this.selectedPlatformId + 1, 0,
         new Platform(this.platformNumberField.value,
                     this.leftTrackField.value,
@@ -348,7 +360,6 @@ StationSignsGenerator.prototype.addPlatformAfter = function() {
 };
 
 StationSignsGenerator.prototype.changePlatform = function() {
-    if (!this.validateInputs()) return;
     if (!this.platforms.length)
         return;
     this.platforms[this.selectedPlatformId].number = this.platformNumberField.value;
@@ -393,7 +404,11 @@ StationSignsGenerator.prototype.movePlatformDown = function() {
 };
 
 StationSignsGenerator.prototype.validateInputs = function() {
-    return true;
+    var hasErrors = ModelGenerator.prototype.validateInputs.call(this);
+    this.nameField.value = this.nameField.value.trim();
+    hasErrors &= this.validateStringInput(this.nameField, 1, this.NAME_MAX_COLS * this.NAME_MAX_ROWS + 1);
+    hasErrors &= this.validateEmptyList(this.platformList);
+    return hasErrors;
 };
 
 /**

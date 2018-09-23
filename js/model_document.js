@@ -57,8 +57,6 @@ ModelDocument.prototype.loadFonts = function() {
 ModelDocument.prototype.drawParts = function() {
     var stream = this.pipe(blobStream());
     this.createPageTemplate();
-    var numberOfNameSigns = 0;
-    var numberOfAdditionalSigns = 0;
     for (var i = 0; i < this.model.parts.length; i++) {
         for (var j = 0; j < this.model.parts[i].amount; j++) {
             this.drawPart(this.model.parts[i]);

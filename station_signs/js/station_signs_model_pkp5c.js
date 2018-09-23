@@ -36,7 +36,7 @@ GenericPlateEp5c.prototype.drawBackground = function(doc) {
 };
 
 /**
- * Station sign with single row for the name, (PKP, ep. Vc).
+ * Station sign with single row for the name (PKP, ep. Vc).
  * @constructor
  */
 StationPlateOneLineEp5c = function(scale, amount, data) {
@@ -553,7 +553,7 @@ DirectionPlateEp5c.prototype.draw = function(doc) {
         this.rimWidth,
         1.7 * this.baseSize + this.rimWidth,
         this.width - 2 * this.rimWidth,
-        this.dirSectionHeight).lineWidth(this.borderWidth).fillAndStroke(this.fontColor, this.fillColor);
+        this.dirSectionHeight).fillAndStroke(this.fontColor, this.fillColor);
     doc.font(this.font[0]).fontSize(this.fontSizes[1]).fill(this.fontColor);
     doc.text(this.dirString,
             (this.width - doc.widthOfString(this.dirString, this.additionalStyles)) * 0.5,
@@ -594,15 +594,90 @@ DirectionPlateEp5c.prototype.draw = function(doc) {
 };
 
 /**
+ * Time table header with station name (PKP, ep. Vc).
+ * @constructor
+ */
+TimeTableHeaderEp5c = function(scale, amount, data) {
+    GenericPlateEp5c.call(this, scale, amount);
+    this.name = data.name.split('\n');
+    this.baseSize = 850.38 / this.scale; // 2.8346 * 300;
+    this.moduleWidth = (2267.68 * data.moduleCount + 85.038) / this.scale;
+};
+TimeTableHeaderEp5c.prototype = Object.create(GenericPlateEp5c.prototype);
+TimeTableHeaderEp5c.prototype.constructor = TimeTableHeaderEp5c;
+
+TimeTableHeaderEp5c.prototype.getDimensions = function(doc) {
+    if (this.width === 0 && this.height === 0)
+    {
+        this.height = this.baseSize + 2 * this.rimWidth;
+        this.width = this.moduleWidth + 2 * this.rimWidth;
+        var maxNameWidth = this.moduleWidth - 0.2 * this.baseSize;
+        this.fontSize = this.baseSize * 0.6013;
+        this.additionalStyles = {characterSpacing: 62 / this.scale, lineBreak: false};
+        doc.font(this.font[0]).fontSize(this.fontSize);
+        if (this.name.length > 1) {
+            // check if multi-line name would fit in the plate as one line
+            var tmpName = this.name.join(' ');
+            if (doc.widthOfString(tmpName, this.additionalStyles) <= maxNameWidth) {
+                this.name[0] = tmpName;
+                this.name.pop();
+            }
+            else {
+                this.fontSize = this.baseSize * 0.4633;
+                this.additionalStyles = {characterSpacing: 45 / this.scale, lineBreak: false};
+                doc.font(this.font[0]).fontSize(this.fontSize);
+            }
+        }
+        this.nameWidth = 0;
+        var tmpWidth = 0;
+        for (var i = 0; i < this.name.length; i++) {
+            tmpWidth = doc.widthOfString(this.name[i], this.additionalStyles);
+            if (tmpWidth > this.nameWidth)
+                this.nameWidth = tmpWidth;
+        }
+        this.nameFontScale = 1;
+        if (this.nameWidth > maxNameWidth) {
+            this.nameFontScale = maxNameWidth / this.nameWidth;
+            this.fontSize *= this.nameFontScale;
+            this.additionalStyles.characterSpacing *= this.nameFontScale;
+        }
+    }
+    return [this.width, this.height];
+};
+
+TimeTableHeaderEp5c.prototype.draw = function(doc) {
+    this.drawBackground(doc);
+    //doc.rect(this.rimWidth, this.rimWidth + this.baseSize * 0.3, this.width, this.baseSize * 0.4).fill("#00FF00");
+    doc.font(this.font[0]).fontSize(this.fontSize);
+    var margin = (this.baseSize * (this.name.length > 1 ? 0.8 : 0.4 ) - doc.heightOfString(this.name[0], this.additionalStyles) * this.name.length) / (this.name.length + 1);
+    var topMargin = this.rimWidth + this.baseSize * (this.name.length > 1 ? 0.15 : 0.42 ) + margin;
+    for (var i = 0; i < this.name.length; i++) {
+        doc.fill(this.fontColor).text(
+            this.name[i],
+            (this.width - doc.widthOfString(this.name[i], this.additionalStyles)) * 0.5,
+            topMargin,
+            this.additionalStyles);
+        topMargin += doc.heightOfString(this.name[i], this.additionalStyles) + margin;
+    }
+};
+
+/**
  * Station and platform signs based on UIC directives, PKP, ep. Vc.
  * @constructor
  */
 StationSignsPKPEp5c = function() {
+    Model.call(this);
     this.name = {"pl":"Oznakowanie stacji kolejowych, epoka Vc",
                  "en":"Railway station signs, epoch Vc",
                  "de":"Bahnhofkennzeichnung, PKP, Epoche Vc"};
     this.strings = {platform: "peron", track: "tor", sector: "sektor", direction: "kierunek"};
-    //this.strings = {platform: "Bahnsteig", track: "Gleis", sector: "Sektor", direction: "Richtung"};
+    this.capabilities = {
+        allowsBilingual: true,
+        allowsAdditionalSigns: true,
+        allowsSmallSigns: true,
+        allowsDirectionPlates: true,
+        allowsTimeTables: true,
+        allowsSectors: true};
     this.stringsTranslated = {platform: "platform", track: "track", sector: "sector", direction: "direction"};
     this.basePlatformSignSize = 565.263;
 };
@@ -726,6 +801,10 @@ StationSignsPKPEp5c.prototype.init = function(scale, data) {
         numberOfNameSigns += 2 * numberOfPlatformPosts;
         if (i === 0 || i == (data.platforms.length - 1)) {
             numberOfAdditionalNameSigns += numberOfPlatformPosts;
+        }
+        if (data.platforms[i].timeTableWidth > 0)
+        {
+            this.parts.push(new TimeTableHeaderEp5c(this.scale, 2, {name: data.name, moduleCount: data.platforms[i].timeTableWidth}));
         }
     }
     var nameLines = data.name.split('\n');
