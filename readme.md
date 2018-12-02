@@ -4,6 +4,7 @@ Various JavaScript apps to generate PDF documents with signs, plates, posts etc.
 Currently availabe *generators*:
 * *example* - Sample application to present how to use the base classes.
 * *station_signs* - Signs with station's name and platforms numbers.
+* *road_posts* - Road kilometer/hectometer posts and plates.
 
 Each app uses the base classes from main `js` folder:
 * `ModelGenerator` - builds generator's UI and delivers the interface to document creation.
