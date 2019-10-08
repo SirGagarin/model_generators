@@ -77,14 +77,14 @@ ModelDocument.prototype.drawParts = function() {
 ModelDocument.prototype.drawPart = function(part) {
     var partDim = part.getDimensions(this);
     var hasToRotate = false;
-    if (partDim[0] > this.drawAreaDim[0] || partDim[1] > this.drawAreaDim[1]) {
+    if (partDim[0] + this.pageMargin > this.drawAreaDim[0] || partDim[1] + this.pageMargin > this.drawAreaDim[1]) {
         hasToRotate = true;
         var tmp = partDim[0];
         partDim[0] = partDim[1];
         partDim[1] = tmp;
     }
     // if rotation didn't help, replace part with a placeholder
-    if (partDim[0] > this.drawAreaDim[0] || partDim[1] > this.drawAreaDim[1]) {
+    if (partDim[0] + this.pageMargin > this.drawAreaDim[0] || partDim[1] + this.pageMargin > this.drawAreaDim[1]) {
         hasToRotate = false;
         part = this.model.partPlaceholder;
         partDim = part.getDimensions(this);
@@ -99,6 +99,7 @@ ModelDocument.prototype.drawPart = function(part) {
     {
         this.addPage();
         this.createPageTemplate();
+        this.lastPartPos[0] = this.pageMargin;
         this.lastPartPos[1] = this.pageMargin;
     }
     this.save();
