@@ -96,7 +96,7 @@ StationSignsGenerator.prototype.createCustomInterfacePart = function() {
     this.platformNumberField.type = "number";
     this.platformNumberField.min = this.MIN_PLATFORM_NUMBER;
     this.platformNumberField.max = this.MAX_PLATFORM_NUMBER;
-    this.platformNumberField.step = 0.1;
+    this.platformNumberField.step = 1;
     this.platformNumberField.title = this.getTranslation("platformNumberHelp", [this.MIN_PLATFORM_NUMBER, this.MAX_PLATFORM_NUMBER]);
     platformNumberGroup.appendChild(this.platformNumberField);
     customInterfacePart.push(platformNumberGroup);
@@ -110,7 +110,7 @@ StationSignsGenerator.prototype.createCustomInterfacePart = function() {
     this.leftTrackField.type = "number";
     this.leftTrackField.min = this.MIN_TRACK_NUMBER;
     this.leftTrackField.max = this.MAX_TRACK_NUMBER;
-    this.leftTrackField.step = 0.1;
+    this.leftTrackField.step = 1;
     this.leftTrackField.title = this.getTranslation("leftTrackHelp", [this.MIN_TRACK_NUMBER, this.MAX_TRACK_NUMBER]);
     leftTrackGroup.appendChild(this.leftTrackField);
     customInterfacePart.push(leftTrackGroup);
@@ -124,7 +124,7 @@ StationSignsGenerator.prototype.createCustomInterfacePart = function() {
     this.rightTrackField.type = "number";
     this.rightTrackField.min = this.MIN_TRACK_NUMBER;
     this.rightTrackField.max = this.MAX_TRACK_NUMBER;
-    this.rightTrackField.step = 0.1;
+    this.rightTrackField.step = 1;
     this.rightTrackField.title = this.getTranslation("rightTrackHelp", [this.MIN_TRACK_NUMBER, this.MAX_TRACK_NUMBER]);
     rightTrackGroup.appendChild(this.rightTrackField);
     customInterfacePart.push(rightTrackGroup);
@@ -138,7 +138,7 @@ StationSignsGenerator.prototype.createCustomInterfacePart = function() {
     this.lengthField.type = "number";
     this.lengthField.min = this.MIN_LENGTH;
     this.lengthField.max = this.MAX_LENGTH;
-    this.lengthField.step = 0.1;
+    this.lengthField.step = 1;
     this.lengthField.title = this.getTranslation("lengthHelp", [this.MIN_LENGTH, this.MAX_LENGTH]);
     lengthGroup.appendChild(this.lengthField);
     customInterfacePart.push(lengthGroup);
@@ -152,7 +152,7 @@ StationSignsGenerator.prototype.createCustomInterfacePart = function() {
     this.widthField.type = "number";
     this.widthField.min = this.MIN_WIDTH;
     this.widthField.max = this.MAX_WIDTH;
-    this.widthField.step = 0.1;
+    this.widthField.step = 1;
     this.widthField.title = this.getTranslation("widthHelp", [this.MIN_WIDTH, this.MAX_WIDTH]);
     widthGroup.appendChild(this.widthField);
     customInterfacePart.push(widthGroup);
@@ -255,6 +255,8 @@ StationSignsGenerator.prototype.createCustomInterfacePart = function() {
     platformListGroup.appendChild(this.platformList);
     this.platformList.addEventListener("input",function(event){ self.platformSelectCallback(); } );
     customInterfacePart.push(platformListGroup);
+
+    self.adjustCapabilities();
 
     return customInterfacePart;
 };

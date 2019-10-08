@@ -1,5 +1,5 @@
 /**
- * Generic station sign typical with UIC standard from epoch Vc.
+ * Generic station sign, PKP, ep. IV.
  * @constructor
  * @param {number} scale Denominator of model's scale.
  * @param {number} amount Number of parts.
@@ -9,7 +9,7 @@ GenericPlateEp4 = function(scale, amount) {
     this.fillColor = "#FFFFFF";
     this.fontColor = "#000000";
     this.borderColor = "#BBBBBB";
-    this.font = ["dworcowa_pkp_new.otf"];
+    this.font = ["dworcowa_pkp_classic.otf"];
     this.width = 0;
     this.height = 0;
     this.additionalStyles = {lineBreak: false};
@@ -26,9 +26,9 @@ StationPlateOneLineEp4 = function(scale, amount, data) {
     GenericPlateEp4.call(this, scale, amount);
     this.name = data.name;
     if (data.isSmall)
-        this.baseSize = 850.38; // 2.8346 * 300;
+        this.baseSize = 1133.84; // 2.8346 * 400;
     else
-        this.baseSize = 1984.22; // 2.8346 * 700;
+        this.baseSize = 2267.68; // 2.8346 * 800;
 };
 StationPlateOneLineEp4.prototype = Object.create(GenericPlateEp4.prototype);
 StationPlateOneLineEp4.prototype.constructor = StationPlateOneLineEp4;
@@ -37,20 +37,25 @@ StationPlateOneLineEp4.prototype.getDimensions = function(doc) {
     if (this.width === 0 && this.height === 0)
     {
         this.height = this.baseSize / this.scale;
-        this.fontSize = this.height * 0.4125;
+        this.fontSize = this.height * 0.4;
+        this.margin = this.height * (this.name.length > 9 ? 0.9375 : 1);
         doc.font(this.font[0]).fontSize(this.fontSize);
-        this.width = this.height * 0.9 + doc.widthOfString(this.name, this.additionalStyles);
+        this.width = this.margin * 2 + doc.widthOfString(this.name, this.additionalStyles);
     }
     return [this.width, this.height];
 };
 
-StationPlateOneLineEp4.prototype.draw = function(doc) {
+StationPlateOneLineEp4.prototype.drawBackground = function(doc) {
     doc.rect(0, 0, this.width, this.height).fillAndStroke(this.fillColor, this.borderColor);
+};
+
+StationPlateOneLineEp4.prototype.draw = function(doc) {
+    this.drawBackground(doc);
     doc.font(this.font[0]).fontSize(this.fontSize);
     doc.fill(this.fontColor).text(
         this.name,
-        this.height * 0.45,
-        this.height * 0.21,
+        this.margin,
+        this.height * 0.27,
         this.additionalStyles);
 };
 
@@ -68,9 +73,10 @@ StationPlateOneLineWithIcoEp4.prototype.getDimensions = function(doc) {
     if (this.width === 0 && this.height === 0)
     {
         this.height = this.baseSize / this.scale;
-        this.fontSize = this.height * 0.4125;
+        this.margin = this.height * 0.9375;
+        this.fontSize = this.height * 0.4;
         doc.font(this.font[0]).fontSize(this.fontSize);
-        this.width = this.height * 2.1095 + doc.widthOfString(this.name, this.additionalStyles);
+        this.width = this.margin * 2 + this.height * 1.2095 + doc.widthOfString(this.name, this.additionalStyles);
     }
     return [this.width, this.height];
 };
@@ -84,95 +90,14 @@ StationPlateOneLineWithIcoEp4.prototype.drawIco = function(doc, pos, size) {
 };
 
 StationPlateOneLineWithIcoEp4.prototype.draw = function(doc) {
-    doc.rect(0, 0, this.width, this.height).fillAndStroke(this.fillColor, this.borderColor);
-    this.drawIco(doc, [this.height * 0.45, this.height * 0.33], this.height * 0.33);
+    this.drawBackground(doc);
+    this.drawIco(doc, [this.margin * 0.9, this.height * 0.3375], this.height * 0.325);
     doc.font(this.font[0]).fontSize(this.fontSize);
     doc.fill(this.fontColor).text(
         this.name,
-        this.height * 1.6595,
-        this.height * 0.21,
+        this.margin + this.height * 1.2095,
+        this.height * 0.27,
         this.additionalStyles);
-};
-
-/**
- * Station sign with two rows for the name, (PKP, ep. IV).
- * @constructor
- */
-StationPlateTwoLinesEp4 = function(scale, amount, data) {
-    StationPlateOneLineEp4.call(this, scale, amount, data);
-    this.nameWidth = 0;
-};
-StationPlateTwoLinesEp4.prototype = Object.create(StationPlateOneLineEp4.prototype);
-StationPlateTwoLinesEp4.prototype.constructor = StationPlateTwoLinesEp4;
-
-StationPlateTwoLinesEp4.prototype.getDimensions = function(doc) {
-    if (this.width === 0 && this.height === 0)
-    {
-        var stringWidth = 0;
-        this.height = this.baseSize / this.scale;
-        this.fontSize = this.height * 0.35;
-        doc.font(this.font[0]).fontSize(this.fontSize);
-        for (var i = 0; i < this.name.length; i++) {
-            stringWidth = doc.widthOfString(this.name[i], this.additionalStyles);
-            if (stringWidth > this.nameWidth)
-                this.nameWidth = stringWidth;
-        }
-        this.width = this.height * 0.9 + this.nameWidth;
-    }
-    return [this.width, this.height];
-};
-
-StationPlateTwoLinesEp4.prototype.draw = function(doc) {
-    doc.rect(0, 0, this.width, this.height).fillAndStroke(this.fillColor, this.borderColor);
-    doc.font(this.font[0]).fontSize(this.fontSize);
-    for (var i = 0; i < this.name.length; i++) {
-        doc.fill(this.fontColor).text(
-            this.name[i],
-            this.height * 0.45 + (this.nameWidth - doc.widthOfString(this.name[i], this.additionalStyles)) * 0.5,
-            this.height * (0.046 + 0.426 * i),
-            this.additionalStyles);
-    }
-};
-
-/**
- * Station sign with single row for the name and additional station icon, (PKP, ep. IV).
- * @constructor
- */
-StationPlateTwoLinesWithIcoEp4 = function(scale, amount, data) {
-    StationPlateOneLineWithIcoEp4.call(this, scale, amount, data);
-    this.nameWidth = 0;
-};
-StationPlateTwoLinesWithIcoEp4.prototype = Object.create(StationPlateOneLineWithIcoEp4.prototype);
-StationPlateTwoLinesWithIcoEp4.prototype.constructor = StationPlateTwoLinesWithIcoEp4;
-
-StationPlateTwoLinesWithIcoEp4.prototype.getDimensions = function(doc) {
-    if (this.width === 0 && this.height === 0)
-    {
-        var stringWidth = 0;
-        this.height = this.baseSize / this.scale;
-        this.fontSize = this.height * 0.35;
-        doc.font(this.font[0]).fontSize(this.fontSize);
-        for (var i = 0; i < this.name.length; i++) {
-            stringWidth = doc.widthOfString(this.name[i], this.additionalStyles);
-            if (stringWidth > this.nameWidth)
-                this.nameWidth = stringWidth;
-        }
-        this.width = this.height * 2.1095 + this.nameWidth;
-    }
-    return [this.width, this.height];
-};
-
-StationPlateTwoLinesWithIcoEp4.prototype.draw = function(doc) {
-    doc.rect(0, 0, this.width, this.height).fillAndStroke(this.fillColor, this.borderColor);
-    this.drawIco(doc, [this.height * 0.45, this.height * 0.33], this.height * 0.33);
-    doc.font(this.font[0]).fontSize(this.fontSize);
-    for (var i = 0; i < this.name.length; i++) {
-        doc.fill(this.fontColor).text(
-            this.name[i],
-            this.height * 1.6595 + (this.nameWidth - doc.widthOfString(this.name[i], this.additionalStyles)) * 0.5,
-            this.height * (0.046 + 0.426 * i),
-            this.additionalStyles);
-    }
 };
 
 /**
@@ -181,9 +106,10 @@ StationPlateTwoLinesWithIcoEp4.prototype.draw = function(doc) {
  */
 PlatformPlateEp4 = function(scale, amount, data) {
     GenericPlateEp4.call(this, scale, amount);
-    this.name = data.name;
-    this.baseSize = 850.38; // 2.8346 * 300;
+    this.baseSize = 963.764; // 2.8346 * 340;
     this.strings = [];
+    this.isLeft = data.isLeft;
+    this.refText = data.refText;
     if (data.numbers.leftTrack)
         this.strings.push(data.strings.track + " " + data.numbers.leftTrack);
     if (data.numbers.platform)
@@ -198,33 +124,84 @@ PlatformPlateEp4.prototype.getDimensions = function(doc) {
     if (this.width === 0 && this.height === 0)
     {
         this.height = this.baseSize / this.scale;
-        this.width = this.height * 0.267;
-        this.fontSize = this.height * 0.4125;
+        this.width = 0;
+        switch(this.strings.length)
+        {
+            case 2:
+                this.width = 4818.82; // 2.8346 * 1700;
+            break;
+            case 3:
+                this.width = 6547.926; // 2.8346 * 2310;
+            break;
+            default:
+                this.width = 2664.524; // 2.8346 * 940;
+            break;
+        }
+        this.width /= this.scale;
+        this.fontSize = this.height * 0.49;
+        this.marginLeft = 0;
+        this.separatorMargin = 0.2647 * this.height;
+        this.separatorWidth = 0.0147 * this.height;
+        this.separatorHeight = 0.8824 * this.height;
+        this.separatorTopMargin = (this.height - this.separatorHeight) * 0.5;
         doc.font(this.font[0]).fontSize(this.fontSize);
+        this.signsWidth = [];
+        var signWidth = 0;
         for (var i = 0; i < this.strings.length; i++) {
-            this.width += (0.367 * this.height + doc.widthOfString(this.strings[i], this.additionalStyles));
+            this.signsWidth[i] = doc.widthOfString(this.strings[i], this.additionalStyles);
+            if (i > 0)
+            {
+                signWidth += this.separatorWidth;
+            }
+            signWidth += this.signsWidth[i] + 2 * this.separatorMargin;
+        }
+        if (signWidth > this.width)
+        {
+            this.width = signWidth;
+            this.marginLeft = this.separatorMargin;
+        }
+        else
+        {
+            this.marginLeft = (this.width - signWidth) * 0.5 + this.separatorMargin;
+        }
+        if (this.strings.length == 1 && this.refText)
+        {
+            signWidth = doc.widthOfString(this.refText, this.additionalStyles) + 2 * this.separatorMargin;
+            if (signWidth > this.width)
+            {
+                this.width = signWidth;
+            }
+            this.marginLeft = (this.width - signWidth) * 0.5 + this.separatorMargin;
+            if (!this.isLeft)
+            {
+                this.marginLeft = this.width - this.marginLeft - this.signsWidth[0];
+            }
         }
     }
     return [this.width, this.height];
 };
 
-PlatformPlateEp4.prototype.draw = function(doc) {
+PlatformPlateEp4.prototype.drawBackground = function(doc) {
     doc.rect(0, 0, this.width, this.height).fillAndStroke(this.fillColor, this.borderColor);
+};
+
+PlatformPlateEp4.prototype.draw = function(doc) {
+    this.drawBackground(doc);
     doc.fill(this.fontColor);
     doc.font(this.font[0]).fontSize(this.fontSize);
-    var marginLeft = this.height * 0.3;
-    var marginTop = this.height * 0.21;
+    var marginLeft = this.marginLeft;
+    var marginTop = this.height * 0.14;
     var isFirst = true;
     for (var i = 0; i < this.strings.length; i++) {
         if (isFirst)
             isFirst = false;
         else
         {
-            doc.rect(marginLeft, 0, this.height * 0.033, this.height).fill(this.fontColor);
-            marginLeft += this.height * 0.2;
+            doc.rect(marginLeft, this.separatorTopMargin, this.separatorWidth, this.separatorHeight).fill(this.fontColor);
+            marginLeft += this.separatorMargin + this.separatorWidth;
         }
         doc.text(this.strings[i], marginLeft, marginTop, this.additionalStyles);
-        marginLeft += (doc.widthOfString(this.strings[i], this.additionalStyles) + this.height * 0.167);
+        marginLeft += (this.signsWidth[i] + this.separatorMargin);
     }
 };
 
@@ -249,28 +226,67 @@ StationSignsPKPEp4 = function() {
 StationSignsPKPEp4.prototype = Object.create(Model.prototype);
 StationSignsPKPEp4.prototype.constructor = StationSignsPKPEp4;
 
-StationSignsPKPEp4.prototype.addStationPlates = function(nameLines, numberOfNameSigns, numberOfAdditionalNameSigns, hasExternal, hasSmallPlates) {
-    if (nameLines.length > 1) {
-        this.parts.push(new StationPlateTwoLinesEp4(this.scale, numberOfNameSigns, {name: nameLines, isSmall: hasSmallPlates}));
-        if (hasExternal) {
-            this.parts.push(new StationPlateTwoLinesWithIcoEp4(this.scale, numberOfAdditionalNameSigns, {name: nameLines, isSmall: hasSmallPlates}));
-        }
-    }
-    else {
-        this.parts.push(new StationPlateOneLineEp4(this.scale, numberOfNameSigns, {name: nameLines[0], isSmall: hasSmallPlates}));
-        if (hasExternal) {
-            this.parts.push(new StationPlateOneLineWithIcoEp4(this.scale, numberOfAdditionalNameSigns, {name: nameLines[0], isSmall: hasSmallPlates}));
-        }
+StationSignsPKPEp4.prototype.addStationPlates = function(nameLine, numberOfNameSigns, numberOfAdditionalNameSigns, hasExternal, hasSmallPlates) {
+    this.parts.push(new StationPlateOneLineEp4(this.scale, numberOfNameSigns, {name: nameLine, isSmall: hasSmallPlates}));
+    if (hasExternal) {
+        this.parts.push(new StationPlateOneLineWithIcoEp4(this.scale, numberOfAdditionalNameSigns, {name: nameLine, isSmall: hasSmallPlates}));
     }
 };
 
 StationSignsPKPEp4.prototype.addPlatformPlates = function(amount, platformData) {
-    this.parts.push(new PlatformPlateEp4(this.scale, amount, {
-                numbers: {platform: platformData.number.toString(), leftTrack: platformData.leftTrack.toString(), rightTrack: platformData.rightTrack.toString()},
-                strings: this.strings}));
-    this.parts.push(new PlatformPlateEp4(this.scale, amount, {
-                numbers: {platform: platformData.number.toString(), leftTrack: platformData.rightTrack.toString(), rightTrack: platformData.leftTrack.toString()},
-                strings: this.strings}));
+    if (platformData.width >= 3 && platformData.width <= 7
+        && !((!platformData.number && platformData.leftTrack && !platformData.rightTrack) || (!platformData.number && !platformData.leftTrack && platformData.rightTrack)))
+    {
+        this.parts.push(new PlatformPlateEp4(this.scale, amount, {
+                    numbers: {platform: platformData.number.toString(), leftTrack: platformData.leftTrack.toString(), rightTrack: platformData.rightTrack.toString()},
+                    strings: this.strings}));
+        this.parts.push(new PlatformPlateEp4(this.scale, amount, {
+                    numbers: {platform: platformData.number.toString(), leftTrack: platformData.rightTrack.toString(), rightTrack: platformData.leftTrack.toString()},
+                    strings: this.strings}));
+    }
+    else
+    {
+        var refString = "";
+        if (platformData.leftTrack)
+        {
+            refString = "peron 8";
+            if (platformData.number)
+            {
+                refString = this.strings.platform + " " + platformData.number.toString();
+                this.parts.push(new PlatformPlateEp4(this.scale, amount, {numbers: {platform: platformData.number.toString()},
+                strings: this.strings, isLeft: true}));
+                this.parts.push(new PlatformPlateEp4(this.scale, amount, {numbers: {platform: platformData.number.toString()},
+                strings: this.strings, isLeft: false}));
+            }
+            this.parts.push(new PlatformPlateEp4(this.scale, amount, {numbers: {leftTrack: platformData.leftTrack.toString()},
+                strings: this.strings, isLeft: true, refText: refString}));
+            this.parts.push(new PlatformPlateEp4(this.scale, amount, {numbers: {leftTrack: platformData.leftTrack.toString()},
+                strings: this.strings, isLeft: false, refText: refString}));
+        }
+        if (platformData.rightTrack)
+        {
+            refString = "peron 8";
+            if (platformData.number)
+            {
+                refString = this.strings.platform + " " + platformData.number.toString();
+                this.parts.push(new PlatformPlateEp4(this.scale, amount, {numbers: {platform: platformData.number.toString()},
+                    strings: this.strings, isLeft: true}));
+                this.parts.push(new PlatformPlateEp4(this.scale, amount, {numbers: {platform: platformData.number.toString()},
+                    strings: this.strings, isLeft: false}));
+            }
+            this.parts.push(new PlatformPlateEp4(this.scale, amount, {numbers: {rightTrack: platformData.rightTrack.toString()},
+                strings: this.strings, isLeft: true, refText: refString}));
+            this.parts.push(new PlatformPlateEp4(this.scale, amount, {numbers: {rightTrack: platformData.rightTrack.toString()},
+                strings: this.strings, isLeft: false, refText: refString}));
+        }
+        if (!platformData.leftTrack && !platformData.rightTrack && platformData.number)
+        {
+            this.parts.push(new PlatformPlateEp4(this.scale, amount, {numbers: {platform: platformData.number.toString()},
+                strings: this.strings, isLeft: true}));
+            this.parts.push(new PlatformPlateEp4(this.scale, amount, {numbers: {platform: platformData.number.toString()},
+                strings: this.strings, isLeft: false}));
+        }
+    }
 };
 
 StationSignsPKPEp4.prototype.init = function(scale, data) {
@@ -285,9 +301,9 @@ StationSignsPKPEp4.prototype.init = function(scale, data) {
             numberOfAdditionalNameSigns += numberOfPlatformPosts;
         }
     }
-    var nameLines = data.name.toUpperCase().split('\n');
-    this.addStationPlates(nameLines, numberOfNameSigns, numberOfAdditionalNameSigns, data.hasExternal, false);
+    var nameLine = data.name.toUpperCase().split('\n').join(' ');
+    this.addStationPlates(nameLine, numberOfNameSigns, numberOfAdditionalNameSigns, data.hasExternal, false);
     if (data.hasSmallPlates) {
-        this.addStationPlates(nameLines, numberOfNameSigns, numberOfAdditionalNameSigns, data.hasExternal, true);
+        this.addStationPlates(nameLine, numberOfNameSigns, numberOfAdditionalNameSigns, data.hasExternal, true);
     }
 };
