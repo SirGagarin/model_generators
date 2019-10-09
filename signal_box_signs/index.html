@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<html>
+    <head>
+        <title>Signal box signs generator</title>
+        <script type="text/javascript" src="https://github.com/devongovett/pdfkit/releases/download/v0.8.0/pdfkit.js"></script>
+        <script type="text/javascript" src="https://github.com/devongovett/blob-stream/releases/download/v0.1.3/blob-stream.js"></script>
+        <script type="text/javascript" src="../js/model_document.js"></script>
+        <script type="text/javascript" src="../js/model_generator.js"></script>
+        <script type="text/javascript" src="../station_signs/js/station_signs_model_pkp4.js"></script>
+        <script type="text/javascript" src="../station_signs/js/station_signs_model_pkp3.js"></script>
+        <script type="text/javascript" src="../station_signs/js/station_signs_model_pkp5c.js"></script>
+        <script type="text/javascript" src="js/signal_box.js"></script>
+        <script type="text/javascript" src="js/signal_box_signs_generator.js"></script>
+        <script type="text/javascript" src="js/signal_box_signs_model_pkp4.js"></script>
+        <script type="text/javascript" src="js/signal_box_signs_model_pkp3.js"></script>
+        <script type="text/javascript" src="js/signal_box_signs_model_pkp5c.js"></script>
+        <style>
+            form {
+                width: 80%;
+                margin: 0 auto;
+            }
+            .left-pane {
+                float: left;
+                width: 30%;
+            }
+            .right-pane {
+                float: right;
+                width: 60%;
+            }
+            .right-pane iframe {
+                width: 100%;
+                height: 800px;
+            }
+            .field-error {
+                border-color: #FF0000;
+                background-color: #FFBBBB;
+            }
+            #model-generator canvas {
+                width: 200px;
+                height: 120px;
+            }
+            #model-generator label:not([for]) {
+                display: inline-block;
+                width: 65%;
+            }
+            #model-generator .button {
+                display: inline-block;
+                cursor:pointer;
+                border: none;
+                margin-top: 0.3em;
+                margin-right: 4px;
+                padding: 4px 6px;
+                background-color: #F15A29;
+                color: #FFF;
+                border-radius: 2px;
+                /*font-family: "Antonio",Arial,sans-serif;*/
+                font-size: 1.11em;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                background-image: none;
+            }
+            #model-generator .button:hover {
+                background-color: #39B54A;
+            }
+            #model-generator select {
+                width: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <form id="model-generator">
+            <h3>If you see this sign, you have disabled JavaScript in your browser. Enable it to use the script.</h3>
+        </form>
+        <script>
+            var modelGenerator = new SignalBoxSignsGenerator("model-generator","../fonts/",
+                [new SignalBoxSignsPKPEp3(), new SignalBoxSignsPKPEp4(), new SignalBoxSignsPKPEp5c()], new SignalBoxSignsTranslationPl());
+        </script>
+    </body>
+</html>
