@@ -64,7 +64,7 @@ SignalBoxSignsPKPEp3.prototype.init = function(scale, data) {
     for (var i=0; i < data.posts.length; i++) {
         switch(data.posts[i].type) {
             case this.postsTypes.SIGNAL_BOX:
-                var nameLine = data.posts[i].name.toUpperCase().split('\n').join(' ');
+                var nameLine = data.posts[i].name.split('\n').join(' ');
                 this.parts.push(new StationPlateOneLineEp3(this.scale, 2, {name: nameLine, isSmall: data.posts[i].smallSigns}));
                 this.parts.push(new SignalBoxSymbolEp4(this.scale, 2, {name: data.posts[i].symbol, isSmall: data.posts[i].smallSigns}));
                 break;
