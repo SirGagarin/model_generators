@@ -132,7 +132,7 @@ StationSignsPKPEp3.prototype.init = function(scale, data) {
             numberOfAdditionalNameSigns += numberOfPlatformPosts;
         }
     }
-    var nameLine = data.name.toUpperCase().split('\n').join(' ');
+    var nameLine = data.name.split('\n').join(' ');
     this.addStationPlates(nameLine, numberOfNameSigns, numberOfAdditionalNameSigns, data.hasExternal, false);
     if (data.hasSmallPlates) {
         this.addStationPlates(nameLine, numberOfNameSigns, numberOfAdditionalNameSigns, data.hasExternal, true);
